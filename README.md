@@ -15,4 +15,10 @@ This is a demo application to build a backend application based on a microservic
 
 ## Architecture
 
-You can find [Here](https://www.figma.com/file/7R1YSKoCeX5SswT6miCzHv/Microservice?node-id=0%3A1) the draft architecture diagram.
+You can find [HERE](https://www.figma.com/file/7R1YSKoCeX5SswT6miCzHv/Microservice?node-id=0%3A1) the draft architecture diagram.
+
+## Run locally
+
+```
+docker-compose up -d
+```
