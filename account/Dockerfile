@@ -6,6 +6,10 @@
 FROM rust:1-slim-bullseye AS builder
 WORKDIR /code
 
+RUN apt-get update && apt-get install -y gcc \ 
+      cmake \ 
+      build-essential
+
 # Download crates-io index and fetch dependency code.
 # This step avoids needing to spend time on every build downloading the index
 # which can take a long time within the docker context. Docker will cache it.
