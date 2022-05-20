@@ -12,7 +12,7 @@ dotenv = "0.15.0"
 envconfig = "0.10.0"
 
 # communication with kafka
-rdkafka = "0.25"
+rdkafka = { version = "0.25", features = ["cmake-build"] }
 
 # The core APIs, including the Serialize and Deserialize traits. Always
 # required when using Serde. The "derive" feature is only required when
