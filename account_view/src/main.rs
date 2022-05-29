@@ -1,5 +1,8 @@
-use actix_web::{middleware::Logger, App, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpServer};
 use envconfig::Envconfig;
+
+#[macro_use]
+extern crate diesel;
 
 // module declarations
 mod config;
@@ -7,6 +10,7 @@ mod db;
 mod kafka;
 mod models;
 mod routes;
+mod schema;
 mod service;
 
 use kafka::KafkaConsumer;
@@ -19,12 +23,21 @@ async fn main() -> std::io::Result<()> {
 
     let consumer = KafkaConsumer::new(&conf.kafka_host).expect("failed to create kafka producer");
 
-    let db_client = db::create_client(&conf.mongodb_uri).await;
+    let db_pool = db::create_client(&conf.postgres_uri).await;
 
-    actix_web::rt::spawn(async move { consumer.run().await });
+    let state = web::Data::new(service::AppState { db_client: db_pool });
 
-    HttpServer::new(move || App::new().wrap(Logger::default()).configure(routes::init))
-        .bind((conf.host, conf.port))?
-        .run()
-        .await
+    let consumer_state = state.clone();
+
+    actix_web::rt::spawn(async move { consumer.run(&consumer_state).await });
+
+    HttpServer::new(move || {
+        App::new()
+            .wrap(Logger::default())
+            .app_data(state.clone())
+            .configure(routes::init)
+    })
+    .bind((conf.host, conf.port))?
+    .run()
+    .await
 }

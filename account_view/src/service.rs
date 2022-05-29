@@ -3,23 +3,25 @@ use super::*;
 
 // This struct represents the state
 pub struct AppState {
-  pub kafka_producer: rdkafka::producer::FutureProducer,
-  pub db_client: mongodb::Client,
+  pub db_client: db::Pool,
 }
 
 pub mod account_view_service {
 
   use super::*;
   use actix_web::web;
-  use uuid::Uuid;
 
   /// Create the account
-  pub async fn create_account_view(account: &models::Account, data: web::Data<AppState>) -> String {
-    let json_account = serde_json::to_string(&account).unwrap();
+  pub async fn create_account_view(
+    json_account: &str,
+    data: web::Data<service::AppState>,
+  ) -> models::Account {
+    let message: models::InputAccount = serde_json::from_str(&json_account).unwrap();
 
-    // Insert the event into the db
-    // db::insert_event(&data.db_client, &json_account).await;
+    let account = db::create_account(data.db_client.clone(), message)
+      .await
+      .expect("Account creation failed");
 
-    return json_account;
+    return account;
   }
 }

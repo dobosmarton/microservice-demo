@@ -1,3 +1,4 @@
+use super::*;
 use crate::config;
 use envconfig::Envconfig;
 use rdkafka::config::{ClientConfig, RDKafkaLogLevel};
@@ -16,7 +17,7 @@ impl KafkaConsumer {
     Ok(KafkaConsumer { consumer })
   }
 
-  pub async fn run(&self) {
+  pub async fn run(&self, app_data: &web::Data<service::AppState>) {
     loop {
       match self.consumer.recv().await {
         Err(e) => eprintln!("{}", &format!("errors from kafka, {}", e.to_string())),
@@ -29,8 +30,11 @@ impl KafkaConsumer {
               ""
             }
           };
-          println!("payload: {}", payload,);
-          // self.consumer.commit_message(&m, CommitMode::Async).unwrap();
+
+          println!("payload: {}", payload);
+          let account = service::create_account_view(payload, app_data.clone()).await;
+
+          println!("Account created: {}", account);
         }
       };
     }
@@ -52,7 +56,9 @@ impl KafkaConsumer {
       .set_log_level(RDKafkaLogLevel::Debug)
       .create()?;
 
-    stream_consumer.subscribe(&[&Self::get_topic_name()]);
+    stream_consumer
+      .subscribe(&[&Self::get_topic_name()])
+      .expect("Stream subscription failed!");
 
     Ok(stream_consumer)
   }
