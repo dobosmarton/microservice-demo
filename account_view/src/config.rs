@@ -8,8 +8,8 @@ pub struct Config {
   #[envconfig(from = "PORT")]
   pub port: u16,
 
-  #[envconfig(from = "MONGODB_URI")]
-  pub mongodb_uri: String,
+  #[envconfig(from = "DATABASE_URL")]
+  pub postgres_uri: String,
 
   #[envconfig(from = "KAFKA_HOST")]
   pub kafka_host: String,
