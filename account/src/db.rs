@@ -3,7 +3,7 @@ pub use self::db::*;
 pub mod db {
 
   use crate::models::AccountEvent;
-  use mongodb::{bson::doc, options::ClientOptions, Client};
+  use mongodb::{bson::doc, error, options::ClientOptions, results::InsertOneResult, Client};
 
   pub async fn readiness_check(client: &Client) {
     client
@@ -25,7 +25,10 @@ pub mod db {
     return client;
   }
 
-  pub async fn insert_event(client: &Client, event_data: &str) {
+  pub async fn insert_event(
+    client: &Client,
+    event_data: &str,
+  ) -> Result<InsertOneResult, error::Error> {
     let account = client
       .database("events")
       .collection::<AccountEvent>("account");
@@ -36,9 +39,6 @@ pub mod db {
       inserted_at: chrono::Utc::now(),
     };
 
-    match account.insert_one(new_event, None).await {
-      Ok(results) => println!("Event inserted: {}", results.inserted_id),
-      Err(cancelled_err) => eprintln!("{}", format!("cancelled, {:?}", cancelled_err)),
-    }
+    account.insert_one(new_event, None).await
   }
 }

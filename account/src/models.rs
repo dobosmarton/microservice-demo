@@ -6,13 +6,14 @@ use serde::{Deserialize, Serialize};
 pub struct AccountInput {
   pub first_name: String,
   pub last_name: String,
+  pub email: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Account {
-  pub id: String,
   pub first_name: String,
   pub last_name: String,
+  pub email: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

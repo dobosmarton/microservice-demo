@@ -11,9 +11,9 @@ async fn create_account(
     account: web::Json<models::AccountInput>,
     data: web::Data<service::AppState>,
 ) -> impl Responder {
-    let new_account = service::create_account(&account.into_inner(), data).await;
+    let new_account_id = service::create_account(&account.into_inner(), data).await;
 
-    HttpResponse::Ok().body(new_account.id)
+    HttpResponse::Ok().body(new_account_id)
 }
 
 /// Init of the service and routes
