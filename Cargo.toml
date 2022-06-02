@@ -2,5 +2,6 @@
 
 members = [
   "account",
-  "account_view"
+  "account_view",
+  "gateway",
 ]
