@@ -2,7 +2,6 @@ pub use self::db::*;
 use super::*;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
-use uuid::Uuid;
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -25,7 +24,7 @@ pub mod db {
   ) -> Result<models::Account, diesel::result::Error> {
     let conn = pool.get().unwrap();
     let new_account = models::NewAccount {
-      id: &Uuid::new_v4().to_string(),
+      id: &item.id,
       first_name: &item.first_name,
       last_name: &item.last_name,
       email: &item.email,
@@ -39,9 +38,9 @@ pub mod db {
 
   pub async fn get_account(
     pool: Pool,
-    _id: &str,
+    account_id: &str,
   ) -> Result<models::Account, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    accounts.find(_id).first::<models::Account>(&conn)
+    accounts.find(account_id).first::<models::Account>(&conn)
   }
 }
