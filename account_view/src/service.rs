@@ -11,6 +11,15 @@ pub mod account_view_service {
   use super::*;
   use actix_web::web;
 
+  pub async fn get_account(
+    account_id: &str,
+    data: web::Data<service::AppState>,
+  ) -> models::Account {
+    db::get_account(data.db_client.clone(), account_id)
+      .await
+      .expect("Account loading fails!")
+  }
+
   /// Create the account
   pub async fn create_account_view(
     json_account: &str,
