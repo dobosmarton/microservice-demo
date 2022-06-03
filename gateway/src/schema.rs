@@ -15,9 +15,15 @@ pub struct Account {
   pub created_at: chrono::NaiveDateTime,
 }
 
-#[derive(GraphQLInputObject)]
+#[derive(GraphQLObject, Debug, Serialize, Deserialize)]
+#[graphql(description = "Account id response object")]
+pub struct AccountId {
+  pub id: String,
+}
+
+#[derive(GraphQLInputObject, Debug, Serialize, Deserialize)]
 #[graphql(description = "New account")]
-struct AccountInput {
+pub struct AccountInput {
   pub first_name: String,
   pub last_name: String,
   pub email: String,
@@ -40,19 +46,12 @@ pub struct MutationRoot;
 
 #[juniper::graphql_object]
 impl MutationRoot {
-  fn create_account(new_account: AccountInput) -> FieldResult<Account> {
-    let date =
-      chrono::NaiveDateTime::parse_from_str("2015-07-01 08:59:60.123", "%Y-%m-%d %H:%M:%S%.f")
-        .expect("Date parsing failed");
+  async fn create_account(account: AccountInput) -> FieldResult<AccountId> {
+    let account_id_obj = service::create_account(account)
+      .await
+      .expect("Account creation failed!");
 
-    // Dummy data
-    Ok(Account {
-      id: String::from(""),
-      first_name: new_account.first_name,
-      last_name: new_account.last_name,
-      email: new_account.email,
-      created_at: date,
-    })
+    Ok(account_id_obj)
   }
 }
 

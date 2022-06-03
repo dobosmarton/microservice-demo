@@ -16,7 +16,7 @@ pub mod account_service {
   pub async fn create_account(
     input_account: &models::AccountInput,
     data: web::Data<AppState>,
-  ) -> String {
+  ) -> models::AccountId {
     let account = models::Account {
       id: Uuid::new_v4().to_string(),
       first_name: String::from(&input_account.first_name),
@@ -34,6 +34,6 @@ pub mod account_service {
     // Send the message
     kafka::send_message(data.kafka_producer.clone(), &json_account).await;
 
-    return account.id;
+    return models::AccountId { id: account.id };
   }
 }

@@ -13,7 +13,9 @@ async fn create_account(
 ) -> impl Responder {
     let new_account_id = service::create_account(&account.into_inner(), data).await;
 
-    HttpResponse::Ok().body(new_account_id)
+    let account_response_json = serde_json::to_string(&new_account_id).unwrap();
+
+    HttpResponse::Ok().body(account_response_json)
 }
 
 /// Init of the service and routes
