@@ -15,6 +15,7 @@ envconfig = "0.10.0"
 
 juniper = "0.15"
 
+tokio = { version = "1", features = ["full"] }
 
 # The core APIs, including the Serialize and Deserialize traits. Always
 # required when using Serde. The "derive" feature is only required when
