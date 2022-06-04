@@ -7,6 +7,7 @@ FROM rust:1-slim-bullseye AS builder
 WORKDIR /code
 
 RUN apt-get update && apt-get install -y gcc \ 
+      libpq-dev \
       cmake \ 
       build-essential
 

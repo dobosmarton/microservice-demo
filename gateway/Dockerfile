@@ -7,6 +7,9 @@ FROM rust:1-slim-bullseye AS builder
 WORKDIR /code
 
 RUN apt-get update && apt-get install -y gcc \ 
+      pkg-config \
+      libssl-dev \
+      openssl \
       cmake \ 
       build-essential
 

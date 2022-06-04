@@ -29,12 +29,10 @@ dependencies = [
  "diesel",
  "dotenv",
  "envconfig",
- "mongodb",
  "r2d2",
  "rdkafka",
  "serde",
  "serde_json",
- "uuid 1.0.0",
 ]
 
 [[package]]
@@ -716,7 +714,6 @@ dependencies = [
  "diesel_derives",
  "pq-sys",
  "r2d2",
- "uuid 0.8.2",
 ]
 
 [[package]]
