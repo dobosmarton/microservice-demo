@@ -6,41 +6,41 @@ use diesel::r2d2::{self, ConnectionManager};
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 pub mod db {
-  use super::*;
+    use super::*;
 
-  use schema::accounts::dsl::*;
+    use schema::accounts::dsl::*;
 
-  pub async fn create_client(database_url: &str) -> Pool {
-    let manager = ConnectionManager::<PgConnection>::new(database_url);
+    pub async fn create_client(database_url: &str) -> Pool {
+        let manager = ConnectionManager::<PgConnection>::new(database_url);
 
-    r2d2::Pool::builder()
-      .build(manager)
-      .expect("Failed to create pool.")
-  }
+        r2d2::Pool::builder()
+            .build(manager)
+            .expect("Failed to create pool.")
+    }
 
-  pub async fn create_account(
-    pool: Pool,
-    item: models::InputAccount,
-  ) -> Result<models::Account, diesel::result::Error> {
-    let conn = pool.get().unwrap();
-    let new_account = models::NewAccount {
-      id: &item.id,
-      first_name: &item.first_name,
-      last_name: &item.last_name,
-      email: &item.email,
-      created_at: chrono::Local::now().naive_local(),
-    };
+    pub async fn create_account(
+        pool: Pool,
+        item: models::InputAccount,
+    ) -> Result<models::Account, diesel::result::Error> {
+        let conn = pool.get().unwrap();
+        let new_account = models::NewAccount {
+            id: &item.id,
+            first_name: &item.first_name,
+            last_name: &item.last_name,
+            email: &item.email,
+            created_at: chrono::Local::now().naive_local(),
+        };
 
-    diesel::insert_into(accounts)
-      .values(&new_account)
-      .get_result(&conn)
-  }
+        diesel::insert_into(accounts)
+            .values(&new_account)
+            .get_result(&conn)
+    }
 
-  pub async fn get_account(
-    pool: Pool,
-    account_id: &str,
-  ) -> Result<models::Account, diesel::result::Error> {
-    let conn = pool.get().unwrap();
-    accounts.find(account_id).first::<models::Account>(&conn)
-  }
+    pub async fn get_account(
+        pool: Pool,
+        account_id: &str,
+    ) -> Result<models::Account, diesel::result::Error> {
+        let conn = pool.get().unwrap();
+        accounts.find(account_id).first::<models::Account>(&conn)
+    }
 }
