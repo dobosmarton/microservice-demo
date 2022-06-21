@@ -975,7 +975,6 @@ dependencies = [
  "chrono",
  "dotenv",
  "envconfig",
- "jsonwebtoken",
  "juniper",
  "reqwest",
  "serde",
