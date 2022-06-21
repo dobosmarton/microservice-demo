@@ -63,6 +63,16 @@ services:
       - broker
       - postgres
 
+  authentication:
+    build:
+      context: ./authentication
+    restart: always
+    env_file: ./authentication/.env
+    ports:
+      - 8083:8083
+    networks:
+      - backend
+
   gateway:
     build:
       context: ./gateway
